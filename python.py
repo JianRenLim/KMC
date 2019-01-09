@@ -1,9 +1,12 @@
-# Title: My Fourth KMC Code
-# Date: 1/5/2018
+# Title: My Fifth KMC Code
+# Date: 1/9/2018
 # Author: Jian Ren Lim
 
 from scipy.integrate import odeint    # import odeint for calculating analytical solution
-import random,math,matplotlib.pyplot as plt,numpy as np   # import random number generator, math, and plot functions
+import random,math,os,matplotlib.pyplot as plt,numpy as np   # import random number generator, math, and plot functions
+path = 'JR KMC output txt_file'     # create a folder to contain the output txt.files
+if not os.path.exists(path):        # check if this directory exist. If it does, we do not need to create this directory
+    os.makedirs(path)               # create directory
 
 constants = [1.8,3.2]       # rate constants iteration for  k1, and k2
 num = [100,500,2000]       # number of initial A molecules
@@ -40,6 +43,11 @@ for k1 in constants:  # k1 will either be 1.8 or 3.2
                 b = p0[1]   # declare initial number of b exactly the same as section A
                 c = p0[2]   # declare initial number of c exactly the same as section A
 
+                # Create txt.file to store KMC data
+                text_file = open('%s/k1=%.1f_k2=%.1f,NA0=%d,NB0=%d' % (path,k1, k2, N, NB),"w")     # create a new txt.file
+                text_file.write("%-14s%-8s%-8s%-8s%-8s%-8s" % ('t', 'proc', 'A', 'B', 'C', 'rand')) # prepare labels for the data we're going to input later
+                # 'proc' shows the process taking place while 'rand' shows the random number between 0 and rtot that determines which rxn will take place
+
                 while c < N+NB:  # let time loop until all molecules have been depleted except C
                     r1 = k1 * a  # rate expression of A -> B
                     r2 = k2 * b  # rate expression of B -> C
@@ -63,9 +71,12 @@ for k1 in constants:  # k1 will either be 1.8 or 3.2
                     if (rand < r2):  # if r2 is greater than rand, r2 takes place
                         b = b - 1;  # b is being used by 1 unit
                         c = c + 1  # c is being produced by 1 unit
+                        text_file.write("\n%.8f    b->c    %-8s%-8s%-8s%.2f" % (time, a, b, c, rand))   # input data after this reaction
+
                     else:  # if r2 is smaller than rand, r2 takes place
                         a = a - 1;  # a is being used by 1 unit
                         b = b + 1  # b is being produced by 1 unit
+                        text_file.write("\n%.8f    a->b    %-8s%-8s%-8s%.2f" % (time, a, b, c, rand))   # input data after this reaction
 
                 plt.plot(t, p[:, 0], 'b--', label=r'$Conc.A_{anal}$')  # this function plot A from analytical part
                 plt.plot(t, p[:, 1], 'g--', label=r'$Conc.B_{anal}$')  # plot B
@@ -73,11 +84,11 @@ for k1 in constants:  # k1 will either be 1.8 or 3.2
                 plt.plot(T, A, label='$A_{kmc}$')  # this function plot A from kmc part
                 plt.plot(T, B, label='$B_{kmc}$')  # plot B
                 plt.plot(T, C, label='$C_{kmc}$')  # plot C
-                plt.title(
-                    '$k_1= %.1f s^{-1},k_2= %.1f s^{-1},N_{A0}= %d,N_{B0}= %d$' % (
-                    k1, k2, N, NB));  # Show the title of individual plot
+                plt.title('$k_1= %.1f s^{-1},k_2= %.1f s^{-1},N_{A0}= %d,N_{B0}= %d$' % (k1, k2, N, NB));  # Show the title of individual plot
                 plt.ylabel('# of molecules')  # label on y-axis
                 plt.xlabel('time')  # label on x-axis
                 plt.legend(loc='best')  # show the legend at location that doesn't obstruct line plots
                 plt.show()  # show the plot we've made
+
+                text_file.close()   # close the current txt.file
 
