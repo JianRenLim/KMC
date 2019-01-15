@@ -81,9 +81,9 @@ for k1 in constants:  # k1 will either be 1.8 or 3.2
                 plt.plot(t, p[:, 0], 'b--', label=r'$Conc.A_{anal}$')  # this function plot A from analytical part
                 plt.plot(t, p[:, 1], 'g--', label=r'$Conc.B_{anal}$')  # plot B
                 plt.plot(t, p[:, 2], 'r--', label=r'$Conc.C_{anal}$')  # plot C
-                plt.plot(T, A, label='$A_{kmc}$')  # this function plot A from kmc part
-                plt.plot(T, B, label='$B_{kmc}$')  # plot B
-                plt.plot(T, C, label='$C_{kmc}$')  # plot C
+                plt.scatterplot(T, A, label='$A_{kmc}$')  # this function plot A from kmc part
+                plt.scatterplot(T, B, label='$B_{kmc}$')  # plot B
+                plt.scatterplot(T, C, label='$C_{kmc}$')  # plot C
                 plt.title('$k_1= %.1f s^{-1},k_2= %.1f s^{-1},N_{A0}= %d,N_{B0}= %d$' % (k1, k2, N, NB));  # Show the title of individual plot
                 plt.ylabel('# of molecules')  # label on y-axis
                 plt.xlabel('time')  # label on x-axis
